@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NER Landslide Risk Monitoring</title>
+    <link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+    <link rel="stylesheet" href="./sytel.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-logo d-flex">
+        <img src="./WhatsApp Image 2026-09-17 at 11.47.29 PM.jpeg" alt="">
+        <h1>RakshaAI</h1>
+    </div>
+
+    <div class="nav-links">
+        <a href="#riskMap">Risk Map</a>
+        <a href="#details">Risk Details</a>
+        <a href="#simulator">Simulator</a>
+        <a href="#alerts">Alerts</a>
+        <a href="#feedback">Feedback</a>
+    </div>
+
+    <button
+        id="darkModeBtn"
+        onclick="toggleDarkMode()">
+        🌙 Dark Mode
+    </button>
+</nav>
+    <header class="header">
+        <h1>🌧️ RakshaAI Landslide Risk Monitoring System</h1>
+        <p>AI-Based Early Warning & Risk Monitoring</p>
+        <button id="darkModeBtn" onclick="toggleDarkMode()">
+    🌙 Dark Mode
+</button>
+    </header>
+
+    <main class="dashboard">
+        <section class="welcome">
+            <h2>Landslide Risk Dashboard</h2>
+            <p>Monitor rainfall, terrain and landslide risk across North-Eastern India.</p>
+            <button onclick="showStatus()">Check System Status</button>
+            <p id="status"></p>
+        </section>
+        <section class="risk-section">
+            <section class="map-section" id="riskMap">
+    <h2>Landslide Risk Map</h2>
+    <div id="Map"></div>
+</section>
+<section class="details-section" id="details">
+    <h2>Risk Details</h2>
+
+    <div class="details-box">
+        <h3 id="selectedLocation">Select a risk zone</h3>
+        <p>Risk Score: <strong id="detailRisk">--</strong></p>
+        <p>Rainfall: <strong id="detailRainfall">--</strong></p>
+        <p>Soil Moisture: <strong id="detailSoil">--</strong></p>
+        <p>Risk Status: <strong id="detailStatus">--</strong></p>
+
+        <button onclick="showRiskReason()">Why is this location risky?</button>
+        <p id="riskReason"></p>
+    </div>
+</section>
+<section class="false-alarm-section">
+    <h2>False Alarm Reduction Analysis</h2>
+
+    <div class="layer-container">
+
+        <div class="layer">
+            <h3>Layer 1 — Historical Data</h3>
+            <p>Past landslide events are checked.</p>
+            <span>✓ Verified</span>
+        </div>
+
+        <div class="layer">
+            <h3>Layer 2 — Terrain & Slope</h3>
+            <p>Slope and terrain conditions are analysed.</p>
+            <span>✓ Verified</span>
+        </div>
+
+        <div class="layer">
+            <h3>Layer 3 — Rainfall</h3>
+            <p>Recent rainfall conditions are evaluated.</p>
+            <span>✓ High Impact</span>
+        </div>
+
+        <div class="layer">
+            <h3>Layer 4 — Soil Moisture</h3>
+            <p>Current soil moisture is considered.</p>
+            <span>✓ High Impact</span>
+        </div>
+
+        <div class="layer">
+            <h3>Layer 5 — AI Risk Decision</h3>
+            <p>All available factors are combined.</p>
+            <span>✓ Risk Confirmed</span>
+        </div>
+
+    </div>
+</section><section class="simulator-section" id="simulator">
+    <h2>What-If Scenario Simulator</h2>
+    <p>Adjust rainfall to observe the estimated risk change.</p>
+
+    <label for="rainfallSlider">
+        Rainfall Change: <strong id="rainfallValue">0%</strong>
+    </label>
+
+    <input
+        type="range"
+        id="rainfallSlider"
+        min="-20"
+        max="100"
+        value="0"
+        step="10"
+        oninput="simulateRisk()"
+    >
+
+    <div class="simulation-result">
+        <h3>Estimated Risk</h3>
+        <p id="simulatedRisk">78%</p>
+        <span id="simulationStatus">High Risk</span>
+    </div>
+</section>
+<section class="shap-section">
+    <h2>AI Explainability - Feature Importance</h2>
+    <p>Factors influencing the current landslide risk prediction.</p>
+
+    <div class="feature">
+        <span>Rainfall</span>
+        <div class="bar">
+            <div class="fill" style="width: 90%"></div>
+        </div>
+        <strong>90%</strong>
+    </div>
+
+    <div class="feature">
+        <span>Soil Moisture</span>
+        <div class="bar">
+            <div class="fill" style="width: 80%"></div>
+        </div>
+        <strong>80%</strong>
+    </div>
+
+    <div class="feature">
+        <span>Slope</span>
+        <div class="bar">
+            <div class="fill" style="width: 70%"></div>
+        </div>
+        <strong>70%</strong>
+    </div>
+
+    <div class="feature">
+        <span>Historical Landslides</span>
+        <div class="bar">
+            <div class="fill" style="width: 60%"></div>
+        </div>
+        <strong>60%</strong>
+    </div>
+</section>
+<section class="feedback-section" id="feedback">
+    <h2>Officer Field Feedback</h2>
+    <p>Validate the predicted risk using field observations.</p>
+
+    <form id="feedbackForm">
+        <label for="officerName">Officer Name</label>
+        <input type="text" id="officerName" placeholder="Enter officer name" required>
+
+        <label for="observation">Field Observation</label>
+        <textarea id="observation"
+            placeholder="Enter field observation" required></textarea>
+
+        <label for="fieldRisk">Observed Risk Level</label>
+        <select id="fieldRisk" required>
+            <option value="">Select risk level</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <button type="submit">Submit Feedback</button>
+        <p id="feedbackMessage"></p>
+    </form>
+</section>
+<section class="confidence-section">
+    <h2>AI Prediction Confidence</h2>
+    <p>Confidence level of the current landslide risk prediction.</p>
+
+    <div class="confidence-box">
+        <div class="confidence-circle">
+            <span id="confidenceValue">87%</span>
+        </div>
+
+        <div class="confidence-info">
+            <h3>High Confidence</h3>
+            <p id="confidenceText">
+                Multiple environmental factors support this prediction.
+            </p>
+        </div>
+    </div>
+</section>
+<section class="alert-section" id="alerts">
+    <h2>Alert History</h2>
+    <p>Recent landslide risk alerts recorded by the system.</p>
+
+    <div class="alert-list">
+        <div class="alert-item">
+            <strong>Sikkim</strong>
+            <span>High Risk — 78%</span>
+            <small>Today, 10:30 AM</small>
+        </div>
+
+        <div class="alert-item">
+            <strong>Meghalaya</strong>
+            <span>Medium Risk — 65%</span>
+            <small>Today, 08:45 AM</small>
+        </div>
+
+        <div class="alert-item">
+            <strong>Arunachal Pradesh</strong>
+            <span>High Risk — 82%</span>
+            <small>Yesterday, 06:20 PM</small>
+        </div>
+    </div>
+</section>
+<section class="filter-section">
+    <h2>Search Risk Locations</h2>
+
+    <input
+        type="text"
+        id="locationSearch"
+        placeholder="Search location..."
+        oninput="filterLocations()"
+    >
+
+    <div id="searchResult">
+        <p>Available locations: Sikkim, Meghalaya, Arunachal Pradesh</p>
+    </div>
+</section>
+    <h2>Current Risk Overview</h2>
+
+    <div class="risk-cards">
+        <div class="risk-card">
+            <h3>Risk Score</h3>
+            <p class="value" id="dashboardRisk">78%</p>
+            <span>High Risk</span>
+        </div>
+
+        <div class="risk-card">
+            <h3>Rainfall</h3>
+            <p class="value">124 mm</p>
+            <span>Last 24 Hours</span>
+        </div>
+
+        <div class="risk-card">
+            <h3>Soil Moisture</h3>
+            <p class="value">82%</p>
+            <span>High Moisture</span>
+        </div>
+
+        <div class="risk-card">
+            <h3>Active Alerts</h3>
+            <p class="value">06</p>
+            <span>Requires Attention</span>
+        </div>
+    </div>
+</section>
+<div class="live-status">
+    <span class="status-dot"></span>
+
+    <div class="status-info">
+        <strong>System Status</strong>
+        <p>Live monitoring active</p>
+    </div>
+
+    <span class="status-time" id="liveTime">
+        --:--:--
+    </span>
+</div>
+<div class="last-updated">
+    <span>🔄 Last Updated</span>
+
+    <strong id="lastUpdatedTime">
+        Updating...
+    </strong>
+
+    <small>
+        Risk data is refreshed periodically
+    </small>
+</div>
+    </main>
+<footer class="footer">
+    <div class="footer-content">
+        <h3>NER Landslide Risk Monitoring System</h3>
+        <p>AI-Based Early Warning & Risk Monitoring</p>
+        <p>Disaster Management | North-Eastern Region</p>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 NER Risk Monitoring System</p>
+        <p>Frontend Prototype</p>
+    </div>
+</footer>
+    <script src="./app.js"></script>
+</body>
+</html>
